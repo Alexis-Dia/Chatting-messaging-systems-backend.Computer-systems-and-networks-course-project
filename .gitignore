@@ -1,3 +1,22 @@
+.project
+.settings
+.classpath
+.DS_Store
+.idea
+.bin
+.metadata
+logs
+service/target/
+dao/target/
+web/target/
+
+.idea
+.idea/*
+.idea/**
+.idea/libraries
+/.idea/
+*.iml
+
 # Compiled class file
 *.class
 
@@ -21,3 +40,6 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+/.idea/
+/Spring-lessons-basic-level.iml
+/.idea/
