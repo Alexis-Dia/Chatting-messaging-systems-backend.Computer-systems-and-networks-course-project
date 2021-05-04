@@ -180,7 +180,7 @@ public class CryptoUtils {
 
   public String encodePhrase(int key, String phrase) throws Exception {
     String keyBin = toBinary(key);
-    String encodedPhrase = "";
+    StringBuilder encodedPhrase = new StringBuilder();
     for (int i = 0; i < phrase.length(); i++) {
       char letter = phrase.charAt(i);
       String textCode = toBinary(letter, 8);
@@ -188,15 +188,15 @@ public class CryptoUtils {
       String encodedLetter = encode(textCode, keys);
       int encodedLetterInDec = Integer.parseInt(encodedLetter, 2);
       String encodedLetterInAscii = Character.toString(encodedLetterInDec);
-      encodedPhrase += encodedLetterInAscii;
+      encodedPhrase.append(encodedLetterInAscii);
     }
-    return encodedPhrase;
+    return encodedPhrase.toString();
   }
 
   public String decodePhrase(int key, String phrase) throws Exception {
     String keyBin = toBinary(key);
 
-    String decodedPhrase = "";
+    StringBuilder decodedPhrase = new StringBuilder();
     for (int i = 0; i < phrase.length(); i++) {
       char letter = phrase.charAt(i);
       String textCode = toBinary(letter, 8);
@@ -204,9 +204,9 @@ public class CryptoUtils {
       String encodedLetter = decode(textCode, keys);
       int encodedLetterInDec = Integer.parseInt(encodedLetter, 2);
       String encodedLetterInAscii = Character.toString(encodedLetterInDec);
-      decodedPhrase = decodedPhrase + encodedLetterInAscii;
+      decodedPhrase.append(encodedLetterInAscii);
     }
-    return decodedPhrase;
+    return decodedPhrase.toString();
   }
 
 }

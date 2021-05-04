@@ -222,7 +222,7 @@ public  class CryptoUtilsTest {
   @Test
   public void encodeAndDecode_isOk() throws Exception {
     /*Initialization*/
-    String phrase = "Alex hi!~/*-+";
+    String phrase = "Alex hi!~/*-+1234567890";
     int key = 642;
 
     /*Action*/
