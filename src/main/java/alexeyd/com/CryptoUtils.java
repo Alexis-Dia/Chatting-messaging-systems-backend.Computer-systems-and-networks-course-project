@@ -24,9 +24,9 @@ public class CryptoUtils {
   private static final int[] EP = { 4, 1, 2, 3, 2, 3, 4, 1 };
   private static final int[] P4 = { 2, 4, 3, 1 };
   private static final int FIRST_ELEMENT_INDEX = 0;
-  public String[] keys;
+  private static String[] keys;
 
-  public String[] getKeys(String key) {
+  public static String[] getKeys(String key) {
     keys = new String[2];
     key = shuffle(P10, key);
     keys[0] = shuffle(P8, move(1, key));
@@ -34,7 +34,7 @@ public class CryptoUtils {
     return keys;
   }
 
-  public String encode(String textCode, String[] keys) throws Exception {
+  public static String encode(String textCode, String[] keys) throws Exception {
     String ip = shuffle(IP,textCode);
     //Text += "Ip = " + ip + '\n';
 
@@ -49,7 +49,7 @@ public class CryptoUtils {
     return shuffle(I_P, ip);
   }
 
-  public String decode(String textCode, String[] keys) throws Exception {
+  public static String decode(String textCode, String[] keys) throws Exception {
     swapKeys();
     String ip = shuffle(IP,textCode);
     //Text += "Ip = " + ip + '\n';
@@ -65,7 +65,7 @@ public class CryptoUtils {
     return shuffle(I_P, ip);
   }
 
-  private String move (Integer n, String array) {
+  private static String move (Integer n, String array) {
     String f_arr = array.substring(0, 5);
     String s_arr = array.substring(5, 10);
     for (int i = 0; i < n; ++i) {
@@ -75,7 +75,7 @@ public class CryptoUtils {
     return f_arr + s_arr;
   }
 
-  private String shuffle(int[] p, String ar) {
+  private static String shuffle(int[] p, String ar) {
     StringBuilder result = new StringBuilder();
     for (int j : p) {
       result.append(ar.charAt(j - 1));
@@ -84,11 +84,11 @@ public class CryptoUtils {
     return result.toString();
   }
 
-  private char getFirst(String s) {
+  private static char getFirst(String s) {
     return s.charAt(FIRST_ELEMENT_INDEX);
   }
 
-  public String XOR(String ar1, String ar2) {
+  public static String XOR(String ar1, String ar2) {
 
     StringBuilder result = new StringBuilder();
     for (int i = 0; i < ar1.length(); ++i) {
@@ -99,11 +99,11 @@ public class CryptoUtils {
     return result.toString();
   }
 
-  private String getR(String ip) {
+  private static String getR(String ip) {
     return ip.substring(4, 8);
   }
 
-  public int[] getIndex(String l) {
+  public static int[] getIndex(String l) {
     int[] res = new int[2];
     String first = String.valueOf(l.charAt(0)) + l.charAt(3);
     String second = String.valueOf(l.charAt(1)) + l.charAt(2);
@@ -114,35 +114,35 @@ public class CryptoUtils {
     return res;
   }
 
-  private String getL(String ip) {
+  private static String getL(String ip) {
     return ip.substring(0, 4);
   }
 
-  private String getSL(int[] indexes) throws Exception {
+  private static String getSL(int[] indexes) throws Exception {
     int digit = SL[indexes[0]][indexes[1]];
     return toBinary(digit, 2);
   }
 
-  public String getSR(int[] indexes) throws Exception {
+  public static String getSR(int[] indexes) throws Exception {
     int digit = SR[indexes[0]][indexes[1]];
     return toBinary(digit, 2);
   }
 
-  private String SW(String key, String R) {
+  private static String SW(String key, String R) {
     //Text += "SW(R) = " + getR(key) + R + '\n';
     return getR(key) + R;
   }
 
-  private String SR(String key, String L) {
+  private static String SR(String key, String L) {
     //Text += "Before IP(-1) = " + L + getR(key) + '\n';
     return L + getR(key);
   }
 
-  public String toBinary(Integer digit) {
+  public static String toBinary(Integer digit) {
     return Integer.toBinaryString(digit);
   }
 
-  public String toBinary(int digit, int length) throws Exception {
+  public static String toBinary(int digit, int length) throws Exception {
     String digitInBin = toBinary(digit);
     int lengthOfDigitInBin = digitInBin.length();
     if (lengthOfDigitInBin == length) {
@@ -172,13 +172,13 @@ public class CryptoUtils {
     throw new Exception();
   }
 
-  private void swapKeys() {
+  private static void swapKeys() {
     String buffer = keys[0];
     keys[0] = keys[1];
     keys[1] = buffer;
   }
 
-  public String encodePhrase(int key, String phrase) throws Exception {
+  public static String encodePhrase(int key, String phrase) throws Exception {
     String keyBin = toBinary(key);
     StringBuilder encodedPhrase = new StringBuilder();
     for (int i = 0; i < phrase.length(); i++) {
@@ -193,7 +193,7 @@ public class CryptoUtils {
     return encodedPhrase.toString();
   }
 
-  public String decodePhrase(int key, String phrase) throws Exception {
+  public static String decodePhrase(int key, String phrase) throws Exception {
     String keyBin = toBinary(key);
 
     StringBuilder decodedPhrase = new StringBuilder();
