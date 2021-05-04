@@ -36,11 +36,11 @@ public class CryptoUtils {
 
   public String encode(String textCode, String[] keys) throws Exception {
     String ip = shuffle(IP,textCode);
-    //label6.Text += "Ip = " + ip + '\n';
+    //Text += "Ip = " + ip + '\n';
 
     for (int i = 0; i < 2; ++i) {
       String ep = XOR(shuffle(EP, getR(ip)), keys[i]);
-      //label6.Text += "E/P(R) XOR K[" + i + "] = " + ep + '\n';
+      //Text += "E/P(R) XOR K[" + i + "] = " + ep + '\n';
       String slsr = getSL(getIndex(getL(ep))) + getSR(getIndex(getR(ep)));
       slsr = XOR(getL(ip),shuffle(P4, slsr));
       ip = i == 0 ? SW(ip, slsr) : SR(ip, slsr);
@@ -52,11 +52,11 @@ public class CryptoUtils {
   public String decode(String textCode, String[] keys) throws Exception {
     swapKeys();
     String ip = shuffle(IP,textCode);
-    //label6.Text += "Ip = " + ip + '\n';
+    //Text += "Ip = " + ip + '\n';
 
     for (int i = 0; i < 2; ++i) {
       String ep = XOR(shuffle(EP, getR(ip)), keys[i]);
-      //label6.Text += "E/P(R) XOR K[" + i + "] = " + ep + '\n';
+      //Text += "E/P(R) XOR K[" + i + "] = " + ep + '\n';
       String slsr = getSL(getIndex(getL(ep))) + getSR(getIndex(getR(ep)));
       slsr = XOR(getL(ip),shuffle(P4, slsr));
       ip = i == 0 ? SW(ip, slsr) : SR(ip, slsr);
@@ -76,13 +76,12 @@ public class CryptoUtils {
   }
 
   private String shuffle(int[] p, String ar) {
-    String result = "";
-    int len = ar.length();
-    for (int i = 0; i < p.length; ++i) {
-      result += ar.charAt(p[i] - 1);
+    StringBuilder result = new StringBuilder();
+    for (int j : p) {
+      result.append(ar.charAt(j - 1));
     }
 
-    return result;
+    return result.toString();
   }
 
   private char getFirst(String s) {
@@ -91,13 +90,13 @@ public class CryptoUtils {
 
   public String XOR(String ar1, String ar2) {
 
-    String Res = "";
+    StringBuilder result = new StringBuilder();
     for (int i = 0; i < ar1.length(); ++i) {
       int res = Integer.parseInt(String.valueOf(ar1.charAt(i))) ^ Integer.parseInt(String.valueOf(ar2.charAt(i)));
-      Res += res;
+      result.append(res);
     }
 
-    return Res;
+    return result.toString();
   }
 
   private String getR(String ip) {
@@ -115,29 +114,27 @@ public class CryptoUtils {
     return res;
   }
 
-  public String getL(String ip) {
+  private String getL(String ip) {
     return ip.substring(0, 4);
   }
 
-  public String getSL(int[] indexes) throws Exception {
+  private String getSL(int[] indexes) throws Exception {
     int digit = SL[indexes[0]][indexes[1]];
-    String digitInBin = toBinary(digit, 2);
-    return digitInBin;
+    return toBinary(digit, 2);
   }
 
   public String getSR(int[] indexes) throws Exception {
     int digit = SR[indexes[0]][indexes[1]];
-    String digitInBin = toBinary(digit, 2);
-    return digitInBin;
+    return toBinary(digit, 2);
   }
 
-  public String SW(String key, String R) {
-    //label6.Text += "SW(R) = " + getR(key) + R + '\n';
+  private String SW(String key, String R) {
+    //Text += "SW(R) = " + getR(key) + R + '\n';
     return getR(key) + R;
   }
 
-  public String SR(String key, String L) {
-    //label6.Text += "Before IP(-1) = " + L + getR(key) + '\n';
+  private String SR(String key, String L) {
+    //Text += "Before IP(-1) = " + L + getR(key) + '\n';
     return L + getR(key);
   }
 
@@ -153,15 +150,63 @@ public class CryptoUtils {
     } else if (length - 1 ==  lengthOfDigitInBin) {
       digitInBin = "0" + digitInBin;
       return digitInBin;
+    } else if (length - 2 ==  lengthOfDigitInBin) {
+      digitInBin = "00" + digitInBin;
+      return digitInBin;
+    } else if (length - 3 ==  lengthOfDigitInBin) {
+      digitInBin = "000" + digitInBin;
+      return digitInBin;
+    } else if (length - 4 ==  lengthOfDigitInBin) {
+      digitInBin = "0000" + digitInBin;
+      return digitInBin;
+    } else if (length - 5 ==  lengthOfDigitInBin) {
+      digitInBin = "00000" + digitInBin;
+      return digitInBin;
+    } else if (length - 6 ==  lengthOfDigitInBin) {
+      digitInBin = "000000" + digitInBin;
+      return digitInBin;
+    } else if (length - 7 ==  lengthOfDigitInBin) {
+      digitInBin = "0000000" + digitInBin;
+      return digitInBin;
     }
     throw new Exception();
   }
 
-  public String[] swapKeys() {
+  private void swapKeys() {
     String buffer = keys[0];
     keys[0] = keys[1];
     keys[1] = buffer;
-    return keys;
+  }
+
+  public String encodePhrase(int key, String phrase) throws Exception {
+    String keyBin = toBinary(key);
+    String encodedPhrase = "";
+    for (int i = 0; i < phrase.length(); i++) {
+      char letter = phrase.charAt(i);
+      String textCode = toBinary(letter, 8);
+      String[] keys = getKeys(keyBin);
+      String encodedLetter = encode(textCode, keys);
+      int encodedLetterInDec = Integer.parseInt(encodedLetter, 2);
+      String encodedLetterInAscii = Character.toString(encodedLetterInDec);
+      encodedPhrase += encodedLetterInAscii;
+    }
+    return encodedPhrase;
+  }
+
+  public String decodePhrase(int key, String phrase) throws Exception {
+    String keyBin = toBinary(key);
+
+    String decodedPhrase = "";
+    for (int i = 0; i < phrase.length(); i++) {
+      char letter = phrase.charAt(i);
+      String textCode = toBinary(letter, 8);
+      String[] keys = getKeys(keyBin);
+      String encodedLetter = decode(textCode, keys);
+      int encodedLetterInDec = Integer.parseInt(encodedLetter, 2);
+      String encodedLetterInAscii = Character.toString(encodedLetterInDec);
+      decodedPhrase = decodedPhrase + encodedLetterInAscii;
+    }
+    return decodedPhrase;
   }
 
 }

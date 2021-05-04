@@ -29,7 +29,6 @@ public  class CryptoUtilsTest {
   @Test
   public void getIndex_Ok() {
     /*Initialization*/
-    int[] expected = {0, 3};
     String l = "0110";
 
     /*Action*/
@@ -69,7 +68,6 @@ public  class CryptoUtilsTest {
   /**
    * 102 is 'f'
    * 212 is decrypted value of 'f'
-   * @throws Exception
    */
   @Test
   public void encode_642and102_212() throws Exception {
@@ -91,7 +89,6 @@ public  class CryptoUtilsTest {
   /**
    * 102 is 'f'
    * 212 is decrypted value of 'f'
-   * @throws Exception
    */
   @Test
   public void decode_642and212_102() throws Exception {
@@ -111,7 +108,6 @@ public  class CryptoUtilsTest {
   /**
    * 116 is 't'
    * 142 is decrypted value of 't'
-   * @throws Exception
    */
   @Test
   public void encode_642and116_142() throws Exception {
@@ -131,7 +127,6 @@ public  class CryptoUtilsTest {
   /**
    * 116 is 't'
    * 142 is decrypted value of 't'
-   * @throws Exception
    */
   @Test
   public void decode_642and142_116() throws Exception {
@@ -146,5 +141,95 @@ public  class CryptoUtilsTest {
 
     /*Assert*/
     assertEquals(expectedDec, Integer.parseInt(res, 2));
+  }
+
+  /**
+   * 120 is 'x'
+   * 142 is decrypted value of 't'
+   */
+  @Test
+  public void encode_642and120_160() throws Exception {
+    /*Initialization*/
+    int expectedDec = 160;
+    String key = cryptoUtils.toBinary(642);
+    String[] keys = cryptoUtils.getKeys(key);
+    String textCode = cryptoUtils.toBinary('x', 8);
+
+    /*Action*/
+    String res = cryptoUtils.encode(textCode, keys);
+
+    /*Assert*/
+    assertEquals(expectedDec, Integer.parseInt(res, 2));
+  }
+
+  /**
+   * 120 is 'space'
+   * 98 is decrypted value of 'space'
+   */
+  @Test
+  public void encode_642and32_98() throws Exception {
+    /*Initialization*/
+    int expectedDec = 98;
+    String key = cryptoUtils.toBinary(642);
+    String[] keys = cryptoUtils.getKeys(key);
+    String textCode = cryptoUtils.toBinary(' ', 8);
+
+    /*Action*/
+    String res = cryptoUtils.encode(textCode, keys);
+
+    /*Assert*/
+    assertEquals(expectedDec, Integer.parseInt(res, 2));
+  }
+
+  /**
+   * 65 is 'A'
+   * 21 is decrypted value of 'A'
+   */
+  @Test
+  public void encode_642and65_21() throws Exception {
+    /*Initialization*/
+    int expectedDec = 21;
+    String key = cryptoUtils.toBinary(642);
+    String[] keys = cryptoUtils.getKeys(key);
+    String textCode = cryptoUtils.toBinary('A', 8);
+
+    /*Action*/
+    String res = cryptoUtils.encode(textCode, keys);
+
+    /*Assert*/
+    assertEquals(expectedDec, Integer.parseInt(res, 2));
+  }
+
+  /**
+   * 65 is 'A'
+   * 21 is decrypted value of 'A'
+   */
+  @Test
+  public void encode_642and21_65() throws Exception {
+    /*Initialization*/
+    int expectedDec = 65;
+    String key = cryptoUtils.toBinary(642);
+    String[] keys = cryptoUtils.getKeys(key);
+    String textCode = cryptoUtils.toBinary(21, 8);
+
+    /*Action*/
+    String res = cryptoUtils.decode(textCode, keys);
+
+    /*Assert*/
+    assertEquals(expectedDec, Integer.parseInt(res, 2));
+  }
+
+  @Test
+  public void encodeAndDecode_isOk() throws Exception {
+    /*Initialization*/
+    String phrase = "Alex hi!~/*-+";
+    int key = 642;
+
+    /*Action*/
+    String encodedPhrase = cryptoUtils.encodePhrase(key, phrase);
+    String decodedPhrase = cryptoUtils.decodePhrase(key, encodedPhrase);
+
+    /*Assert*/
+    assertEquals(phrase, decodedPhrase);
   }
 }
