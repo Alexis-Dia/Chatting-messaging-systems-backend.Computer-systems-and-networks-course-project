@@ -7,8 +7,7 @@ curl -i -X GET 127.0.0.1:8080/chats/general
 
 POST http://127.0.0.1:8080/chats/general
 {
-"id":15,
 "topic":"general",
-"author":"eee",
-"text":"eee"
+"author":"author",
+"text":"text"
 }
