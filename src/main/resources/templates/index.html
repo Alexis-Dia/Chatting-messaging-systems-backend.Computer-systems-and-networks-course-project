@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <title>reactive spring chat!</title>
+    <style>
+
+    </style>
+</head>
+
+<body>
+
+
+<form id="myForm">
+
+    <label for="first_name">имя:</label>
+    <input type="text" name="author" id="fname">
+
+    <label for="last_name">текст:</label>
+    <input type="text" name="text" id="lname">
+
+    <input value="отправить" type="submit">
+</form>
+
+<div id="chat" style="padding-top: 100px">
+
+</div>
+
+<script>
+
+    window.addEventListener("load", function () {
+        function sendData() {
+            const XHR = new XMLHttpRequest();
+
+            XHR.open("POST", "http://127.0.0.1:8080/chats/general");
+            XHR.setRequestHeader("Content-Type", "application/json");
+
+            const elements = form.elements
+            const request = {};
+            for (var i = 0; i < elements.length; i++) {
+                const item = elements.item(i);
+                request[item.name] = item.value;
+            }
+            XHR.send(JSON.stringify(request));
+        }
+
+        const form = document.getElementById("myForm");
+
+        form.addEventListener("submit", function (event) {
+            event.preventDefault();
+            sendData();
+        });
+    });
+
+    (async () => {
+        let response = await fetch('http://127.0.0.1:8080/chats/general');
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder("utf-8")
+        const chatDiv = document.getElementById("chat")
+
+        while (true) {
+            const {done, value} = await reader.read();
+
+            if (done) {
+                break;
+            }
+
+            let message;
+            try {
+                message = JSON.parse(decoder.decode(value));
+            } catch (e) {
+                continue;
+            }
+
+            const elemDiv = document.createElement('div');
+            elemDiv.textContent = message.creationDate + " | " + message.author + " : " + message.text
+
+            chatDiv.prepend(elemDiv);
+        }
+    })()
+</script>
+</body>
+
+</html>

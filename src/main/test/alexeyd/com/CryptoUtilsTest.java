@@ -3,6 +3,7 @@ package alexeyd.com;
 
 import static org.junit.Assert.assertEquals;
 
+import alexeyd.com.util.SDESCypherUtils;
 import org.junit.Test;
 
 /**
@@ -18,7 +19,7 @@ public  class CryptoUtilsTest {
     String rightAnswer = "00100110";
 
     /*Action*/
-    String result = CryptoUtils.XOR(ar1, ar2);
+    String result = SDESCypherUtils.XOR(ar1, ar2);
 
     /*Assert*/
     assertEquals(rightAnswer, result);
@@ -30,7 +31,7 @@ public  class CryptoUtilsTest {
     String l = "0110";
 
     /*Action*/
-    int[] res = CryptoUtils.getIndex(l);
+    int[] res = SDESCypherUtils.getIndex(l);
 
     /*Assert*/
     assertEquals(res[0], 0);
@@ -44,7 +45,7 @@ public  class CryptoUtilsTest {
     int[] indexes = {0, 3};
 
     /*Action*/
-    String res = CryptoUtils.getSR(indexes);
+    String res = SDESCypherUtils.getSR(indexes);
 
     /*Assert*/
     assertEquals(expected, res);
@@ -57,7 +58,7 @@ public  class CryptoUtilsTest {
     int[] indexes = {0, 1};
 
     /*Action*/
-    String res = CryptoUtils.getSR(indexes);
+    String res = SDESCypherUtils.getSR(indexes);
 
     /*Assert*/
     assertEquals(expected, res);
@@ -72,12 +73,12 @@ public  class CryptoUtilsTest {
     /*Initialization*/
     String expectedBin = "11010100";
     int expectedDec = 212;
-    String key = CryptoUtils.toBinary(642);
-    String[] keys = CryptoUtils.getKeys(key);
-    String textCode = CryptoUtils.toBinary('f', 8);
+    String key = SDESCypherUtils.toBinary(642);
+    String[] keys = SDESCypherUtils.getKeys(key);
+    String textCode = SDESCypherUtils.toBinary('f', 8);
 
     /*Action*/
-    String res = CryptoUtils.encode(textCode, keys);
+    String res = SDESCypherUtils.encode(textCode, keys);
 
     /*Assert*/
     assertEquals(expectedBin, res);
@@ -92,12 +93,12 @@ public  class CryptoUtilsTest {
   public void decode_642and212_102() throws Exception {
     /*Initialization*/
     int expectedDec = 102;
-    String key = CryptoUtils.toBinary(642);
-    String[] keys = CryptoUtils.getKeys(key);
-    String textCode = CryptoUtils.toBinary(212, 8);
+    String key = SDESCypherUtils.toBinary(642);
+    String[] keys = SDESCypherUtils.getKeys(key);
+    String textCode = SDESCypherUtils.toBinary(212, 8);
 
     /*Action*/
-    String res = CryptoUtils.decode(textCode, keys);
+    String res = SDESCypherUtils.decode(textCode, keys);
 
     /*Assert*/
     assertEquals(expectedDec, Integer.parseInt(res, 2));
@@ -111,12 +112,12 @@ public  class CryptoUtilsTest {
   public void encode_642and116_142() throws Exception {
     /*Initialization*/
      int expectedDec = 142;
-    String key = CryptoUtils.toBinary(642);
-    String[] keys = CryptoUtils.getKeys(key);
-    String textCode = CryptoUtils.toBinary('t', 8);
+    String key = SDESCypherUtils.toBinary(642);
+    String[] keys = SDESCypherUtils.getKeys(key);
+    String textCode = SDESCypherUtils.toBinary('t', 8);
 
     /*Action*/
-    String res = CryptoUtils.encode(textCode, keys);
+    String res = SDESCypherUtils.encode(textCode, keys);
 
     /*Assert*/
     assertEquals(expectedDec, Integer.parseInt(res, 2));
@@ -130,12 +131,12 @@ public  class CryptoUtilsTest {
   public void decode_642and142_116() throws Exception {
     /*Initialization*/
     int expectedDec = 116;
-    String key = CryptoUtils.toBinary(642);
-    String[] keys = CryptoUtils.getKeys(key);
-    String textCode = CryptoUtils.toBinary(142, 8);
+    String key = SDESCypherUtils.toBinary(642);
+    String[] keys = SDESCypherUtils.getKeys(key);
+    String textCode = SDESCypherUtils.toBinary(142, 8);
 
     /*Action*/
-    String res = CryptoUtils.decode(textCode, keys);
+    String res = SDESCypherUtils.decode(textCode, keys);
 
     /*Assert*/
     assertEquals(expectedDec, Integer.parseInt(res, 2));
@@ -149,12 +150,12 @@ public  class CryptoUtilsTest {
   public void encode_642and120_160() throws Exception {
     /*Initialization*/
     int expectedDec = 160;
-    String key = CryptoUtils.toBinary(642);
-    String[] keys = CryptoUtils.getKeys(key);
-    String textCode = CryptoUtils.toBinary('x', 8);
+    String key = SDESCypherUtils.toBinary(642);
+    String[] keys = SDESCypherUtils.getKeys(key);
+    String textCode = SDESCypherUtils.toBinary('x', 8);
 
     /*Action*/
-    String res = CryptoUtils.encode(textCode, keys);
+    String res = SDESCypherUtils.encode(textCode, keys);
 
     /*Assert*/
     assertEquals(expectedDec, Integer.parseInt(res, 2));
@@ -168,12 +169,12 @@ public  class CryptoUtilsTest {
   public void encode_642and32_98() throws Exception {
     /*Initialization*/
     int expectedDec = 98;
-    String key = CryptoUtils.toBinary(642);
-    String[] keys = CryptoUtils.getKeys(key);
-    String textCode = CryptoUtils.toBinary(' ', 8);
+    String key = SDESCypherUtils.toBinary(642);
+    String[] keys = SDESCypherUtils.getKeys(key);
+    String textCode = SDESCypherUtils.toBinary(' ', 8);
 
     /*Action*/
-    String res = CryptoUtils.encode(textCode, keys);
+    String res = SDESCypherUtils.encode(textCode, keys);
 
     /*Assert*/
     assertEquals(expectedDec, Integer.parseInt(res, 2));
@@ -187,12 +188,12 @@ public  class CryptoUtilsTest {
   public void encode_642and65_21() throws Exception {
     /*Initialization*/
     int expectedDec = 21;
-    String key = CryptoUtils.toBinary(642);
-    String[] keys = CryptoUtils.getKeys(key);
-    String textCode = CryptoUtils.toBinary('A', 8);
+    String key = SDESCypherUtils.toBinary(642);
+    String[] keys = SDESCypherUtils.getKeys(key);
+    String textCode = SDESCypherUtils.toBinary('A', 8);
 
     /*Action*/
-    String res = CryptoUtils.encode(textCode, keys);
+    String res = SDESCypherUtils.encode(textCode, keys);
 
     /*Assert*/
     assertEquals(expectedDec, Integer.parseInt(res, 2));
@@ -206,12 +207,12 @@ public  class CryptoUtilsTest {
   public void encode_642and21_65() throws Exception {
     /*Initialization*/
     int expectedDec = 65;
-    String key = CryptoUtils.toBinary(642);
-    String[] keys = CryptoUtils.getKeys(key);
-    String textCode = CryptoUtils.toBinary(21, 8);
+    String key = SDESCypherUtils.toBinary(642);
+    String[] keys = SDESCypherUtils.getKeys(key);
+    String textCode = SDESCypherUtils.toBinary(21, 8);
 
     /*Action*/
-    String res = CryptoUtils.decode(textCode, keys);
+    String res = SDESCypherUtils.decode(textCode, keys);
 
     /*Assert*/
     assertEquals(expectedDec, Integer.parseInt(res, 2));
@@ -224,8 +225,8 @@ public  class CryptoUtilsTest {
     int key = 642;
 
     /*Action*/
-    String encodedPhrase = CryptoUtils.encodePhrase(key, phrase);
-    String decodedPhrase = CryptoUtils.decodePhrase(key, encodedPhrase);
+    String encodedPhrase = SDESCypherUtils.encodePhrase(key, phrase);
+    String decodedPhrase = SDESCypherUtils.decodePhrase(key, encodedPhrase);
 
     /*Assert*/
     assertEquals(phrase, decodedPhrase);

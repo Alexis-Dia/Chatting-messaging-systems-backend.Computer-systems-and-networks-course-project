@@ -1,9 +1,9 @@
-package alexeyd.com;
+package alexeyd.com.util;
 
 /**
  * @author Alexey Druzik on 03.05.2021
  */
-public class CryptoUtils {
+public class SDESCypherUtils {
 
   private final static int[][] SR = new int[][] {
       {1,1,2,3},
