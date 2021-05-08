@@ -1,4 +1,4 @@
-package alexeyd.com.resource;
+package alexeyd.com.controller;
 
 import alexeyd.com.model.Message;
 import alexeyd.com.repository.ChatRepository;
