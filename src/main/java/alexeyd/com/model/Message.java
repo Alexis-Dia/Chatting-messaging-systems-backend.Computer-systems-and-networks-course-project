@@ -27,4 +27,10 @@ public class Message {
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime creationDate;
     private String text;
+
+    public Message(String topic, String author, String text) {
+        this.topic = topic;
+        this.author = author;
+        this.text = text;
+    }
 }
