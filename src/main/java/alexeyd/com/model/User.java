@@ -17,7 +17,7 @@ public class User {
     @MongoId
     private long id;
     private String name;
-    private String login;
+    private String email;
     private String password;
-    private Integer role;
+    private String userRole;
 }

@@ -6,12 +6,10 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoIterable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.CollectionOptions;
 import org.springframework.data.mongodb.core.ReactiveMongoOperations;
 
-import javax.annotation.PostConstruct;
 import java.util.List;
 
 @Configuration
@@ -43,22 +41,22 @@ public class AppConfiguration {
                     .id(1)
                     .name("Joe Doe")
                     .password("12345678")
-                    .login("joedow@gmail.com")
-                    .role(1)
+                    .email("joedow@gmail.com")
+                    .userRole("ADMIN")
                     .build();
             User user1 = User.builder()
                     .id(2)
                     .name("Sidorov Igor")
                     .password("12345678")
-                    .login("sidorov@tut.by")
-                    .role(2)
+                    .email("sidorov@tut.by")
+                    .userRole("USER")
                     .build();
             User user2 = User.builder()
                     .id(3)
                     .name("Vasilev Ivan")
                     .password("12345678")
-                    .login("vasiliev@tut.by")
-                    .role(2)
+                    .email("vasiliev@tut.by")
+                    .userRole("USER")
                     .build();
             userRepository.insert(List.of(admin, user1, user2)).blockLast();
         }
