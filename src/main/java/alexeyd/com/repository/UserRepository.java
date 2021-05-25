@@ -11,4 +11,6 @@ import java.util.Optional;
 public interface UserRepository  extends ReactiveMongoRepository<User, Long> {
 
     Mono<User> findFirstByEmail(String email);
+
+    Mono save(User user);
 }

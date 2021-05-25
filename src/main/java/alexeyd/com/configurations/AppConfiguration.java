@@ -49,14 +49,14 @@ public class AppConfiguration {
                     .name("Sidorov Igor")
                     .password("12345678")
                     .email("sidorov@tut.by")
-                    .userRole("USER")
+                    .userRole("DRIVER")
                     .build();
             User user2 = User.builder()
                     .id(3)
                     .name("Vasilev Ivan")
                     .password("12345678")
                     .email("vasiliev@tut.by")
-                    .userRole("USER")
+                    .userRole("DRIVER")
                     .build();
             userRepository.insert(List.of(admin, user1, user2)).blockLast();
         }

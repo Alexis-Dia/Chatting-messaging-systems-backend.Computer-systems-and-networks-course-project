@@ -22,6 +22,7 @@ public class Message {
     private long id;
     private String topic;
     private String author;
+    private boolean deleted = false;
 
     @JsonFormat(pattern = "HH:mm:ss")
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
@@ -32,5 +33,14 @@ public class Message {
         this.topic = topic;
         this.author = author;
         this.text = text;
+    }
+
+    public Message(String topic, boolean deleted) {
+        this.topic = topic;
+        this.deleted = deleted;
+    }
+
+    public boolean getDeleted() {
+        return deleted;
     }
 }
