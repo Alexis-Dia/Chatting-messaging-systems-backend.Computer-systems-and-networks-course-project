@@ -102,6 +102,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/channels/createNewChannel").hasAuthority(ROLE_ADMIN)
                 .antMatchers(HttpMethod.POST, "/channels/deleteChannel").hasAuthority(ROLE_ADMIN)
                 .antMatchers(HttpMethod.POST, "/channels/addNewMessage").hasAuthority(ROLE_DRIVER)
+                .antMatchers(HttpMethod.PUT, "/user/changeNickName").hasAuthority(ROLE_DRIVER)
 
                 .antMatchers(HttpMethod.PUT, PATH_USER_EDIT_ME).hasAuthority(ROLE_DRIVER)
                 .antMatchers(HttpMethod.GET, PATH_USER_GET_ME).hasAuthority(ROLE_DRIVER)

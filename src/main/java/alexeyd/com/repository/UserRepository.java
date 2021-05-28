@@ -8,9 +8,11 @@ import reactor.core.publisher.Mono;
 
 import java.util.Optional;
 
-public interface UserRepository  extends ReactiveMongoRepository<User, Long> {
+public interface UserRepository extends ReactiveMongoRepository<User, Long> {
 
     Mono<User> findFirstByEmail(String email);
+
+    Flux<User> findAllById(Long id);
 
     Mono save(User user);
 }

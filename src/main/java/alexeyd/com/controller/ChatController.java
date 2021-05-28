@@ -1,8 +1,10 @@
 package alexeyd.com.controller;
 
 import alexeyd.com.model.Message;
+import alexeyd.com.model.Report;
 import alexeyd.com.repository.DefaultChatRepository;
 import alexeyd.com.repository.NotTailableChatRepository;
+import alexeyd.com.repository.ReportRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

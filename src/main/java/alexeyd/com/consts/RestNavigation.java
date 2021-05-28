@@ -31,5 +31,6 @@ public interface RestNavigation {
    String PATH_BRAND_ALL = "/brand/all";
    String PATH_AUTH_AUTHENTICATE = "/auth/authenticate";
    String PATH_USER_SIGN_UP = "/user/signUp";
+   String PATH_USER_CHANGE_NICKNAME = "/user/changeNickName";
 
 }
