@@ -231,4 +231,18 @@ public  class CryptoUtilsTest {
     /*Assert*/
     assertEquals(phrase, decodedPhrase);
   }
+
+  @Test
+  public void encodeAndDecode_isOk_2() throws Exception {
+    /*Initialization*/
+    String phrase = "Channel was created by admin at 01/01/2021";
+    int key = 642;
+
+    /*Action*/
+    String encodedPhrase = SDESCypherUtils.encodePhrase(key, phrase);
+    String decodedPhrase = SDESCypherUtils.decodePhrase(key, encodedPhrase);
+
+    /*Assert*/
+    assertEquals(phrase, decodedPhrase);
+  }
 }
