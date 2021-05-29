@@ -3,9 +3,12 @@ package alexeyd.com.controller;
 import alexeyd.com.model.User;
 import alexeyd.com.repository.DefaultChatRepository;
 import alexeyd.com.repository.UserRepository;
+import alexeyd.com.util.CryptoUtils;
+import alexeyd.com.util.SDESCypherUtils;
 import exceptions.UserAlreadyExistsException;
 import exceptions.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
@@ -21,15 +24,19 @@ import static alexeyd.com.consts.Common.*;
 public class AuthenticationController {
 
     @Autowired
+    private Environment env;
+
+    @Autowired
     private DefaultChatRepository defaultChatRepository;
 
     @Autowired
     private UserRepository userService;
 
     @GetMapping("/authenticate")
-    public User authenticate(@RequestParam("emailAddress") String emailAddress, @RequestParam("password") String password) {
+    public User authenticate(@RequestParam("emailAddress") String emailAddress, @RequestParam("password") String password) throws Exception {
 
         //Mono<User> userByLogin = Mono.justOrEmpty(userService.findFirstByEmail(emailAddress));
+        emailAddress = SDESCypherUtils.encodePhrase(getSecretKey(), emailAddress);
         Mono<User> userByLoginMono = userService.findFirstByEmail(emailAddress);
         User userByLogin = userByLoginMono.block();
 
@@ -41,13 +48,14 @@ public class AuthenticationController {
 
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         String decodedPassword = userByLogin.getPassword();
+        decodedPassword = SDESCypherUtils.decodePhrase(getSecretKey(), decodedPassword);
 
         if (!password.equals(decodedPassword)) {
         //if (!bCryptPasswordEncoder.matches(password, decodedPassword)) {
             throw new UserNotFoundException(MSG_ERR_INCORRECT_PASSORD);
         }
 
-        userByLogin.setPassword(password);
+        userByLogin = CryptoUtils.decryptWholeObject(getSecretKey(), userByLogin);
         return userByLogin;
     }
 
@@ -62,4 +70,9 @@ public class AuthenticationController {
         }
 
     }
+
+    private int getSecretKey(){
+        return Integer.parseInt(env.getProperty("secretKey"));
+    }
+
 }

@@ -4,12 +4,14 @@ import alexeyd.com.model.Report;
 import alexeyd.com.model.User;
 import alexeyd.com.repository.ReportRepository;
 import alexeyd.com.repository.UserRepository;
+import alexeyd.com.util.CryptoUtils;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoIterable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.data.mongodb.core.CollectionOptions;
 import org.springframework.data.mongodb.core.ReactiveMongoOperations;
 import org.springframework.security.core.Authentication;
@@ -26,6 +28,8 @@ public class AppConfiguration {
     private static final String REPORTS_DB_NAME = "reports";
     private static final String MESSAGES_DB_NAME = "messages";
 
+    @Autowired
+    private Environment env;
 /*
 
     @Bean
@@ -54,7 +58,7 @@ public class AppConfiguration {
 
     @Autowired
     public void prepare(ReactiveMongoOperations mongoOperations,
-                        UserRepository userRepository) {
+                        UserRepository userRepository) throws Exception {
 
         MongoClient mongoClient = MongoClients.create();
         MongoIterable<String> stringMongoIterable = mongoClient.getDatabase("general").listCollectionNames();
@@ -84,6 +88,7 @@ public class AppConfiguration {
                     .email("joedow@gmail.com")
                     .userRole("ADMIN")
                     .build();
+            admin = CryptoUtils.encryptWholeObject(getSecretKey(), admin);
             User user1 = User.builder()
                     .id(2)
                     .name("Sidorov Igor")
@@ -91,6 +96,7 @@ public class AppConfiguration {
                     .email("sidorov@tut.by")
                     .userRole("DRIVER")
                     .build();
+            user1 = CryptoUtils.encryptWholeObject(getSecretKey(), user1);
             User user2 = User.builder()
                     .id(3)
                     .name("Vasilev Ivan")
@@ -98,6 +104,7 @@ public class AppConfiguration {
                     .email("vasiliev@tut.by")
                     .userRole("DRIVER")
                     .build();
+            user2 = CryptoUtils.encryptWholeObject(getSecretKey(), user2);
             userRepository.insert(List.of(admin, user1, user2)).blockLast();
         }
 
@@ -116,6 +123,10 @@ public class AppConfiguration {
                             .size(1024 * 8)
                             .capped()).block();
         }
+    }
+
+    private int getSecretKey() {
+        return Integer.parseInt(env.getProperty("secretKey"));
     }
 
 }

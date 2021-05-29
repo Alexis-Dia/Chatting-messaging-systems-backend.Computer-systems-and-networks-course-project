@@ -1,15 +1,12 @@
 package alexeyd.com.controller;
 
 import alexeyd.com.model.Message;
-import alexeyd.com.model.Report;
 import alexeyd.com.repository.DefaultChatRepository;
 import alexeyd.com.repository.NotTailableChatRepository;
-import alexeyd.com.repository.ReportRepository;
-import alexeyd.com.util.MessageCryptoUtils;
+import alexeyd.com.util.CryptoUtils;
 import alexeyd.com.util.SDESCypherUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -50,7 +46,7 @@ public class ChatController {
 		message.setCreationDate(LocalDateTime.now().toString());
 		message.setId(System.currentTimeMillis());
 
-		message = MessageCryptoUtils.encryptWholeObject(getSecretKey(), message);
+		message = CryptoUtils.encryptWholeObject(getSecretKey(), message);
 
 		//defaultChatRepository.save(message);
 		return 	defaultChatRepository.save(message)
@@ -63,7 +59,7 @@ public class ChatController {
 		message.setCreationDate(LocalDateTime.now().toString());
 		message.setId(System.currentTimeMillis());
 
-		message = MessageCryptoUtils.encryptWholeObject(getSecretKey(), message);
+		message = CryptoUtils.encryptWholeObject(getSecretKey(), message);
 
 		return defaultChatRepository.save(message)
 				.thenReturn(ResponseEntity.ok().<Void>build())
@@ -78,7 +74,7 @@ public class ChatController {
 		return defaultChatRepository.findAllByTopic(encodedTopic).map(message -> {
 			String encryptedText = message.getText();
 			try {
-				message = MessageCryptoUtils.decryptWholeObject(getSecretKey(), message);
+				message = CryptoUtils.decryptWholeObject(getSecretKey(), message);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

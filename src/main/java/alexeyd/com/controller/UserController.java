@@ -3,8 +3,10 @@ package alexeyd.com.controller;
 import alexeyd.com.model.Message;
 import alexeyd.com.model.User;
 import alexeyd.com.repository.UserRepository;
+import alexeyd.com.util.CryptoUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -29,16 +31,21 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class UserController {
 
     @Autowired
+    private Environment env;
+
+    @Autowired
     private final MongoTemplate mongoTemplate;
 
     @Autowired
     private final UserRepository userRepository;
 
     @PostMapping(path = PATH_USER_SIGN_UP, consumes = APPLICATION_JSON_VALUE)
-    public Mono<ResponseEntity<Void>> createNewUser(@RequestBody User user) {
+    public Mono<ResponseEntity<Void>> createNewUser(@RequestBody User user) throws Exception {
         //User user = new User(u.getName(), u.getEmail(), u.getPassword(), ROLE_DRIVER);
         user.setUserRole(ROLE_DRIVER);
         user.setId(System.currentTimeMillis());
+
+        user = CryptoUtils.encryptWholeObject(getSecretKey(), user);
         return userRepository.save(user)
                 .thenReturn(ResponseEntity.ok().<Void>build())
                 .onErrorReturn(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
@@ -73,5 +80,9 @@ public class UserController {
                 .thenReturn(ResponseEntity.ok().<Void>build())
                 .onErrorReturn(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
         return name;*/
+    }
+
+    private int getSecretKey(){
+        return Integer.parseInt(env.getProperty("secretKey"));
     }
 }
