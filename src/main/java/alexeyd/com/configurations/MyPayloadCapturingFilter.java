@@ -26,6 +26,7 @@ import java.time.LocalDateTime;
 @Component
 class MyPayloadCapturingFilter {
 
+    public static final String ANONYMOUS_USER = "anonymousUser";
     @Autowired
     private ReportRepository reportRepository;
 
@@ -37,7 +38,7 @@ class MyPayloadCapturingFilter {
                                             FilterChain filterChain)
                     throws ServletException, IOException {
 
-                String name = "anonymousUser";
+                String name = ANONYMOUS_USER;
                 SecurityContext context = SecurityContextHolder.getContext();
                 if (context != null) {
                     name = context.getAuthentication().getName();
