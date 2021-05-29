@@ -47,7 +47,7 @@ public class ChatController {
 
 	@PostMapping(path = "/channels/createNewChannel", consumes = APPLICATION_JSON_VALUE)
 	public Mono<ResponseEntity<Void>> createNewTopic(@RequestBody Message message) throws Exception {
-		message.setCreationDate(LocalDateTime.now());
+		message.setCreationDate(LocalDateTime.now().toString());
 		message.setId(System.currentTimeMillis());
 
 		message = MessageCryptoUtils.encryptWholeObject(getSecretKey(), message);
@@ -60,7 +60,7 @@ public class ChatController {
 
 	@PostMapping(path = "/channels/addNewMessage", consumes = APPLICATION_JSON_VALUE)
 	public Mono<ResponseEntity<Void>> store(@RequestBody Message message) throws Exception {
-		message.setCreationDate(LocalDateTime.now());
+		message.setCreationDate(LocalDateTime.now().toString());
 		message.setId(System.currentTimeMillis());
 
 		message = MessageCryptoUtils.encryptWholeObject(getSecretKey(), message);

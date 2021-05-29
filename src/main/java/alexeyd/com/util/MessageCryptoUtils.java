@@ -18,6 +18,9 @@ public class MessageCryptoUtils {
         String encodedAuthor = SDESCypherUtils.encodePhrase(key, authorWithoutEncryption);
         message.setAuthor(encodedAuthor);
 
+        String creationDateWithoutEncryption = message.getCreationDate().toString();
+        String encodedCreationDate = SDESCypherUtils.encodePhrase(key, creationDateWithoutEncryption);
+        message.setCreationDate(encodedCreationDate);
 
         return message;
     }
@@ -35,6 +38,10 @@ public class MessageCryptoUtils {
         String authorWithEncryption = message.getAuthor();
         String decodedAuthor = SDESCypherUtils.decodePhrase(key, authorWithEncryption);
         message.setAuthor(decodedAuthor);
+
+        String creationDateWithEncryption = message.getCreationDate();
+        String decodedCreationDate = SDESCypherUtils.decodePhrase(key, creationDateWithEncryption);
+        message.setCreationDate(decodedCreationDate);
 
         return message;
     }

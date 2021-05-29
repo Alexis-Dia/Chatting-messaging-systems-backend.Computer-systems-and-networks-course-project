@@ -245,4 +245,17 @@ public  class CryptoUtilsTest {
     /*Assert*/
     assertEquals(phrase, decodedPhrase);
   }
+  @Test
+  public void encodeAndDecode_isOk_3() throws Exception {
+    /*Initialization*/
+    String phrase = "false";
+    int key = 642;
+
+    /*Action*/
+    String encodedPhrase = SDESCypherUtils.encodePhrase(key, phrase);
+    String decodedPhrase = SDESCypherUtils.decodePhrase(key, encodedPhrase);
+
+    /*Assert*/
+    assertEquals(phrase, decodedPhrase);
+  }
 }
