@@ -5,8 +5,10 @@ import alexeyd.com.model.Report;
 import alexeyd.com.model.User;
 import alexeyd.com.repository.DefaultChatRepository;
 import alexeyd.com.repository.ReportRepository;
+import alexeyd.com.util.CryptoUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -26,11 +28,27 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class ReportController {
 
     @Autowired
+    private Environment env;
+
+    @Autowired
     private final ReportRepository reportRepository;
 
     @GetMapping(value = "/reports", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<Report> getAll() {
-        return reportRepository.findAllByCodeIsNot("1_000");
+        return reportRepository.findAllByCodeIsNot("1_000").map(
+                report -> {
+                    try {
+                        report = CryptoUtils.decryptWholeObject(getSecretKey(), report);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    return report;
+                }
+        );
+    }
+
+    private int getSecretKey(){
+        return Integer.parseInt(env.getProperty("secretKey"));
     }
 
 }

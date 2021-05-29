@@ -1,6 +1,7 @@
 package alexeyd.com.util;
 
 import alexeyd.com.model.Message;
+import alexeyd.com.model.Report;
 import alexeyd.com.model.User;
 
 public class CryptoUtils {
@@ -87,5 +88,55 @@ public class CryptoUtils {
         user.setPassword(decodedPAsswordWithEncryption);
 
         return user;
+    }
+
+    public static Report encryptWholeObject(int key, Report report) throws Exception {
+
+        String codeWithoutEncryption = report.getCode();
+        String encodedCode = SDESCypherUtils.encodePhrase(key, codeWithoutEncryption);
+        report.setCode(encodedCode);
+
+        String methodWithoutEncryption = report.getMethod();
+        String encodedMethod = SDESCypherUtils.encodePhrase(key, methodWithoutEncryption);
+        report.setMethod(encodedMethod);
+
+        String urlWithoutEncryption = report.getUrl();
+        String encodedUrl = SDESCypherUtils.encodePhrase(key, urlWithoutEncryption);
+        report.setUrl(encodedUrl);
+
+        String localDateTimeWithoutEncryption = report.getLocalDateTime();
+        String encodedLocalDateTime = SDESCypherUtils.encodePhrase(key, localDateTimeWithoutEncryption);
+        report.setLocalDateTime(encodedLocalDateTime);
+
+        String userNameWithoutEncryption = report.getUserName();
+        String encodedUserName = SDESCypherUtils.encodePhrase(key, userNameWithoutEncryption);
+        report.setUserName(encodedUserName);
+
+        return report;
+    }
+
+    public static Report decryptWholeObject(int key, Report report) throws Exception {
+
+        String codeWithoutEncryption = report.getCode();
+        String encodedCode = SDESCypherUtils.decodePhrase(key, codeWithoutEncryption);
+        report.setCode(encodedCode);
+
+        String methodWithoutEncryption = report.getMethod();
+        String encodedMethod = SDESCypherUtils.decodePhrase(key, methodWithoutEncryption);
+        report.setMethod(encodedMethod);
+
+        String urlWithoutEncryption = report.getUrl();
+        String encodedUrl = SDESCypherUtils.decodePhrase(key, urlWithoutEncryption);
+        report.setUrl(encodedUrl);
+
+        String localDateTimeWithoutEncryption = report.getLocalDateTime();
+        String encodedLocalDateTime = SDESCypherUtils.decodePhrase(key, localDateTimeWithoutEncryption);
+        report.setLocalDateTime(encodedLocalDateTime);
+
+        String userNameWithoutEncryption = report.getUserName();
+        String encodedUserName = SDESCypherUtils.decodePhrase(key, userNameWithoutEncryption);
+        report.setUserName(encodedUserName);
+
+        return report;
     }
 }

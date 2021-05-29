@@ -2,10 +2,13 @@ package alexeyd.com.configurations;
 
 import alexeyd.com.model.Report;
 import alexeyd.com.repository.ReportRepository;
+import alexeyd.com.util.CryptoUtils;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.Ordered;
+import org.springframework.core.env.Environment;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,6 +29,9 @@ import java.time.LocalDateTime;
 @Component
 class MyPayloadCapturingFilter {
 
+    @Autowired
+    private Environment env;
+
     public static final String ANONYMOUS_USER = "anonymousUser";
     @Autowired
     private ReportRepository reportRepository;
@@ -33,6 +39,7 @@ class MyPayloadCapturingFilter {
     @Bean
     public FilterRegistrationBean<OncePerRequestFilter> saveLoginOriginFilter() {
         OncePerRequestFilter filter = new OncePerRequestFilter() {
+            @SneakyThrows
             @Override
             protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                             FilterChain filterChain)
@@ -51,9 +58,11 @@ class MyPayloadCapturingFilter {
                 report.setId(System.currentTimeMillis());
                 report.setMethod(method);
                 report.setUrl(requestURI);
-                report.setLocalDateTime(LocalDateTime.now());
+                report.setLocalDateTime(LocalDateTime.now().toString());
                 report.setUserName(name);
                 report.setCode(String.valueOf(status));
+                report = CryptoUtils.encryptWholeObject(getSecretKey(), report);
+
                 reportRepository.save(report).block();
 
 
@@ -63,6 +72,10 @@ class MyPayloadCapturingFilter {
         FilterRegistrationBean<OncePerRequestFilter> bean = new FilterRegistrationBean<>(filter);
         bean.setOrder(Ordered.LOWEST_PRECEDENCE);
         return bean;
+    }
+
+    private int getSecretKey(){
+        return Integer.parseInt(env.getProperty("secretKey"));
     }
 
 }

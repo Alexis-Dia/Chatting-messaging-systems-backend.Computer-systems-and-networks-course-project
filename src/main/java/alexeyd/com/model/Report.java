@@ -22,7 +22,7 @@ public class Report {
     private String url;
     private String code;
     private String userName;
-    private LocalDateTime localDateTime;
+    private String localDateTime;
 
     public Report(long id, String method, String url, String code, String userName) {
         this.id = id;
