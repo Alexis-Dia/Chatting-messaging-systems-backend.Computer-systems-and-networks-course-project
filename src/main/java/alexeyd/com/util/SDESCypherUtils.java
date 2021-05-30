@@ -26,7 +26,7 @@ public class SDESCypherUtils {
   private static final int FIRST_ELEMENT_INDEX = 0;
   private static String[] keys;
 
-  public static String[] getKeys(String key) {
+  public static synchronized String[] getKeys(String key) {
     keys = new String[2];
     key = shuffle(P10, key);
     keys[0] = shuffle(P8, move(1, key));
@@ -34,7 +34,7 @@ public class SDESCypherUtils {
     return keys;
   }
 
-  public static String encode(String textCode, String[] keys) throws Exception {
+  public static synchronized String encode(String textCode, String[] keys) throws Exception {
     String ip = shuffle(IP,textCode);
     //Text += "Ip = " + ip + '\n';
 
@@ -49,7 +49,7 @@ public class SDESCypherUtils {
     return shuffle(I_P, ip);
   }
 
-  public static String decode(String textCode, String[] keys) throws Exception {
+  public static synchronized String decode(String textCode, String[] keys) throws Exception {
     swapKeys();
     String ip = shuffle(IP,textCode);
     //Text += "Ip = " + ip + '\n';
@@ -65,7 +65,7 @@ public class SDESCypherUtils {
     return shuffle(I_P, ip);
   }
 
-  private static String move (Integer n, String array) {
+  private static synchronized String move (Integer n, String array) {
     String f_arr = array.substring(0, 5);
     String s_arr = array.substring(5, 10);
     for (int i = 0; i < n; ++i) {
@@ -84,11 +84,11 @@ public class SDESCypherUtils {
     return result.toString();
   }
 
-  private static char getFirst(String s) {
+  private static synchronized char getFirst(String s) {
     return s.charAt(FIRST_ELEMENT_INDEX);
   }
 
-  public static String XOR(String ar1, String ar2) {
+  public static synchronized String XOR(String ar1, String ar2) {
 
     StringBuilder result = new StringBuilder();
     for (int i = 0; i < ar1.length(); ++i) {
@@ -99,7 +99,7 @@ public class SDESCypherUtils {
     return result.toString();
   }
 
-  private static String getR(String ip) {
+  private static synchronized String getR(String ip) {
     return ip.substring(4, 8);
   }
 
@@ -114,7 +114,7 @@ public class SDESCypherUtils {
     return res;
   }
 
-  private static String getL(String ip) {
+  private static synchronized String getL(String ip) {
     return ip.substring(0, 4);
   }
 
@@ -123,22 +123,22 @@ public class SDESCypherUtils {
     return toBinary(digit, 2);
   }
 
-  public static String getSR(int[] indexes) throws Exception {
+  public static synchronized String getSR(int[] indexes) throws Exception {
     int digit = SR[indexes[0]][indexes[1]];
     return toBinary(digit, 2);
   }
 
-  private static String SW(String key, String R) {
+  private static synchronized String SW(String key, String R) {
     //Text += "SW(R) = " + getR(key) + R + '\n';
     return getR(key) + R;
   }
 
-  private static String SR(String key, String L) {
+  private static synchronized String SR(String key, String L) {
     //Text += "Before IP(-1) = " + L + getR(key) + '\n';
     return L + getR(key);
   }
 
-  public static String toBinary(Integer digit) {
+  public static synchronized String toBinary(Integer digit) {
     return Integer.toBinaryString(digit);
   }
 
@@ -172,13 +172,13 @@ public class SDESCypherUtils {
     throw new Exception();
   }
 
-  private static void swapKeys() {
+  private static synchronized void swapKeys() {
     String buffer = keys[0];
     keys[0] = keys[1];
     keys[1] = buffer;
   }
 
-  public static String encodePhrase(int key, String phrase) throws Exception {
+  public static synchronized String encodePhrase(int key, String phrase) throws Exception {
     String keyBin = toBinary(key);
     StringBuilder encodedPhrase = new StringBuilder();
     for (int i = 0; i < phrase.length(); i++) {
@@ -193,7 +193,7 @@ public class SDESCypherUtils {
     return encodedPhrase.toString();
   }
 
-  public static String decodePhrase(int key, String phrase) throws Exception {
+  public static synchronized String decodePhrase(int key, String phrase) throws Exception {
     String keyBin = toBinary(key);
 
     StringBuilder decodedPhrase = new StringBuilder();

@@ -72,12 +72,12 @@ public class ChatController {
 		String encodedTopic = SDESCypherUtils.encodePhrase(getSecretKey(), topic);
 
 		return defaultChatRepository.findAllByTopic(encodedTopic).map(message -> {
-			String encryptedText = message.getText();
 			try {
 				message = CryptoUtils.decryptWholeObject(getSecretKey(), message);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			//throw new RuntimeException("Error during decrypting.");
 			return message;
 		});
 	}
