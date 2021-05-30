@@ -1,4 +1,4 @@
-package exceptions;
+package alexeyd.com.exceptions;
 
 public class UsernameNotFoundException extends Exception {
 
