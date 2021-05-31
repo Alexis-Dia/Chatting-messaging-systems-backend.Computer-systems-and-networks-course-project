@@ -3,6 +3,7 @@ package alexeyd.com.controller;
 import alexeyd.com.model.Message;
 import alexeyd.com.repository.DefaultChatRepository;
 import alexeyd.com.repository.NotTailableChatRepository;
+import alexeyd.com.service.CommonService;
 import alexeyd.com.util.CryptoUtils;
 import alexeyd.com.util.SDESCypherUtils;
 import lombok.AllArgsConstructor;
@@ -28,7 +29,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class ChatController {
 
 	@Autowired
-	private Environment env;
+	private CommonService commonService;
 
 	@Autowired
 	private final DefaultChatRepository defaultChatRepository;
@@ -37,7 +38,7 @@ public class ChatController {
 	private final NotTailableChatRepository notTailableChatRepository;
 
 	@GetMapping
-	public String index() {
+	public String getRootIndex() {
 		return "index.html";
 	}
 
@@ -46,7 +47,7 @@ public class ChatController {
 		message.setCreationDate(LocalDateTime.now().toString());
 		message.setId(System.currentTimeMillis());
 
-		message = CryptoUtils.encryptWholeObject(getSecretKey(), message);
+		message = CryptoUtils.encryptWholeObject(commonService.getSecretKey(), message);
 
 		//defaultChatRepository.save(message);
 		return 	defaultChatRepository.save(message)
@@ -55,11 +56,11 @@ public class ChatController {
 	}
 
 	@PostMapping(path = "/channels/addNewMessage", consumes = APPLICATION_JSON_VALUE)
-	public Mono<ResponseEntity<Void>> store(@RequestBody Message message) throws Exception {
+	public Mono<ResponseEntity<Void>> addNewMessage(@RequestBody Message message) throws Exception {
 		message.setCreationDate(LocalDateTime.now().toString());
 		message.setId(System.currentTimeMillis());
 
-		message = CryptoUtils.encryptWholeObject(getSecretKey(), message);
+		message = CryptoUtils.encryptWholeObject(commonService.getSecretKey(), message);
 
 		return defaultChatRepository.save(message)
 				.thenReturn(ResponseEntity.ok().<Void>build())
@@ -69,11 +70,11 @@ public class ChatController {
 	@GetMapping(value = "/channels/{topic}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
 	public Flux<Message> getAllByTopic(@PathVariable("topic") String topic) throws Exception {
 
-		String encodedTopic = SDESCypherUtils.encodePhrase(getSecretKey(), topic);
+		String encodedTopic = SDESCypherUtils.encodePhrase(commonService.getSecretKey(), topic);
 
 		return defaultChatRepository.findAllByTopic(encodedTopic).map(message -> {
 			try {
-				message = CryptoUtils.decryptWholeObject(getSecretKey(), message);
+				message = CryptoUtils.decryptWholeObject(commonService.getSecretKey(), message);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -91,7 +92,7 @@ public class ChatController {
 				.map(message -> {
 					String encryptedTopic = message.getTopic();
 					try {
-						String decryptedTopic = SDESCypherUtils.decodePhrase(getSecretKey(), encryptedTopic);
+						String decryptedTopic = SDESCypherUtils.decodePhrase(commonService.getSecretKey(), encryptedTopic);
 						message.setTopic(decryptedTopic);
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -109,7 +110,7 @@ public class ChatController {
 	public void deleteChannel(@RequestBody Message message) throws Exception {
 
 		String topicWithoutEncryption = message.getTopic();
-		String encodedTopic = SDESCypherUtils.encodePhrase(getSecretKey(), topicWithoutEncryption);
+		String encodedTopic = SDESCypherUtils.encodePhrase(commonService.getSecretKey(), topicWithoutEncryption);
 		message.setTopic(encodedTopic);
 
 		List<Message> block = notTailableChatRepository.findAllByTopic(message.getTopic()).collectList().block();
@@ -118,10 +119,6 @@ public class ChatController {
 			notTailableChatRepository.save(ob).block();
 		}
 
-	}
-
-	private int getSecretKey(){
-		return Integer.parseInt(env.getProperty("secretKey"));
 	}
 
 }

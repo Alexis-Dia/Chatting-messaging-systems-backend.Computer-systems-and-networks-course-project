@@ -3,6 +3,7 @@ package alexeyd.com.controller;
 import alexeyd.com.model.Message;
 import alexeyd.com.model.User;
 import alexeyd.com.repository.UserRepository;
+import alexeyd.com.service.CommonService;
 import alexeyd.com.util.CryptoUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class UserController {
 
     @Autowired
-    private Environment env;
+    private CommonService commonService;
 
     @Autowired
     private final MongoTemplate mongoTemplate;
@@ -45,7 +46,7 @@ public class UserController {
         user.setUserRole(ROLE_DRIVER);
         user.setId(System.currentTimeMillis());
 
-        user = CryptoUtils.encryptWholeObject(getSecretKey(), user);
+        user = CryptoUtils.encryptWholeObject(commonService.getSecretKey(), user);
         return userRepository.save(user)
                 .thenReturn(ResponseEntity.ok().<Void>build())
                 .onErrorReturn(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
@@ -82,7 +83,4 @@ public class UserController {
         return name;*/
     }
 
-    private int getSecretKey(){
-        return Integer.parseInt(env.getProperty("secretKey"));
-    }
 }

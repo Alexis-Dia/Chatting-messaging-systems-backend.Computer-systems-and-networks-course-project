@@ -5,6 +5,7 @@ import alexeyd.com.model.Report;
 import alexeyd.com.model.User;
 import alexeyd.com.repository.DefaultChatRepository;
 import alexeyd.com.repository.ReportRepository;
+import alexeyd.com.service.CommonService;
 import alexeyd.com.util.CryptoUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +28,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @AllArgsConstructor
 public class ReportController {
 
-    @Autowired
-    private Environment env;
+  @Autowired
+  private CommonService commonService;
 
     @Autowired
     private final ReportRepository reportRepository;
@@ -38,17 +39,13 @@ public class ReportController {
         return reportRepository.findAllByCodeIsNot("1_000").map(
                 report -> {
                     try {
-                        report = CryptoUtils.decryptWholeObject(getSecretKey(), report);
+                        report = CryptoUtils.decryptWholeObject(commonService.getSecretKey(), report);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                     return report;
                 }
         );
-    }
-
-    private int getSecretKey(){
-        return Integer.parseInt(env.getProperty("secretKey"));
     }
 
 }

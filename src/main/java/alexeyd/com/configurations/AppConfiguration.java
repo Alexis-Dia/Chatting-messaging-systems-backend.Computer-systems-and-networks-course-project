@@ -4,6 +4,7 @@ import alexeyd.com.model.Report;
 import alexeyd.com.model.User;
 import alexeyd.com.repository.ReportRepository;
 import alexeyd.com.repository.UserRepository;
+import alexeyd.com.service.CommonService;
 import alexeyd.com.util.CryptoUtils;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
@@ -29,7 +30,7 @@ public class AppConfiguration {
     private static final String MESSAGES_DB_NAME = "messages";
 
     @Autowired
-    private Environment env;
+    private CommonService commonService;
 /*
 
     @Bean
@@ -88,7 +89,7 @@ public class AppConfiguration {
                     .email("joedow@gmail.com")
                     .userRole("ADMIN")
                     .build();
-            admin = CryptoUtils.encryptWholeObject(getSecretKey(), admin);
+            admin = CryptoUtils.encryptWholeObject(commonService.getSecretKey(), admin);
             User user1 = User.builder()
                     .id(2)
                     .name("Sidorov Igor")
@@ -96,7 +97,7 @@ public class AppConfiguration {
                     .email("sidorov@tut.by")
                     .userRole("DRIVER")
                     .build();
-            user1 = CryptoUtils.encryptWholeObject(getSecretKey(), user1);
+            user1 = CryptoUtils.encryptWholeObject(commonService.getSecretKey(), user1);
             User user2 = User.builder()
                     .id(3)
                     .name("Vasilev Ivan")
@@ -104,7 +105,7 @@ public class AppConfiguration {
                     .email("vasiliev@tut.by")
                     .userRole("DRIVER")
                     .build();
-            user2 = CryptoUtils.encryptWholeObject(getSecretKey(), user2);
+            user2 = CryptoUtils.encryptWholeObject(commonService.getSecretKey(), user2);
             userRepository.insert(List.of(admin, user1, user2)).blockLast();
         }
 
@@ -123,10 +124,6 @@ public class AppConfiguration {
                             .size(1024 * 8)
                             .capped()).block();
         }
-    }
-
-    private int getSecretKey() {
-        return Integer.parseInt(env.getProperty("secretKey"));
     }
 
 }

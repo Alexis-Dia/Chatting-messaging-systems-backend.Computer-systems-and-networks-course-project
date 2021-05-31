@@ -2,6 +2,7 @@ package alexeyd.com.configurations;
 
 import alexeyd.com.model.Report;
 import alexeyd.com.repository.ReportRepository;
+import alexeyd.com.service.CommonService;
 import alexeyd.com.util.CryptoUtils;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,7 @@ import java.time.LocalDateTime;
 class MyPayloadCapturingFilter {
 
     @Autowired
-    private Environment env;
+    private CommonService commonService;
 
     public static final String ANONYMOUS_USER = "anonymousUser";
     @Autowired
@@ -61,7 +62,7 @@ class MyPayloadCapturingFilter {
                 report.setLocalDateTime(LocalDateTime.now().toString());
                 report.setUserName(name);
                 report.setCode(String.valueOf(status));
-                report = CryptoUtils.encryptWholeObject(getSecretKey(), report);
+                report = CryptoUtils.encryptWholeObject(commonService.getSecretKey(), report);
 
                 reportRepository.save(report).block();
 
@@ -72,10 +73,6 @@ class MyPayloadCapturingFilter {
         FilterRegistrationBean<OncePerRequestFilter> bean = new FilterRegistrationBean<>(filter);
         bean.setOrder(Ordered.LOWEST_PRECEDENCE);
         return bean;
-    }
-
-    private int getSecretKey(){
-        return Integer.parseInt(env.getProperty("secretKey"));
     }
 
 }

@@ -3,6 +3,7 @@ package alexeyd.com.security;
 import alexeyd.com.model.User;
 import alexeyd.com.repository.DefaultChatRepository;
 import alexeyd.com.repository.UserRepository;
+import alexeyd.com.service.CommonService;
 import alexeyd.com.util.SDESCypherUtils;
 import alexeyd.com.exceptions.UserNotFoundException;
 import lombok.SneakyThrows;
@@ -31,7 +32,7 @@ import static alexeyd.com.consts.Common.MSG_ERR_USER_WASN_T_FOUND;
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     @Autowired
-    private Environment env;
+    private CommonService commonService;
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -49,7 +50,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
         //Mono<User> userByLogin = Mono.justOrEmpty(userService.findFirstByEmail(emailAddress));
         String name = authentication.getName();
-        name = SDESCypherUtils.encodePhrase(getSecretKey(), name);
+        name = SDESCypherUtils.encodePhrase(commonService.getSecretKey(), name);
         Mono<User> userByLoginMono = userService.findFirstByEmail(name);
         User userByLogin = userByLoginMono.block();
 
@@ -61,7 +62,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         String decodedPassword = userByLogin.getPassword();
-        decodedPassword = SDESCypherUtils.decodePhrase(getSecretKey(), decodedPassword);
+        decodedPassword = SDESCypherUtils.decodePhrase(commonService.getSecretKey(), decodedPassword);
 
         String credentials = authentication.getCredentials().toString();
         if (!credentials.equals(decodedPassword)) {
@@ -71,13 +72,13 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
             Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
         String userRole = userByLogin.getUserRole();
-        userRole = SDESCypherUtils.decodePhrase(getSecretKey(), userRole);
+        userRole = SDESCypherUtils.decodePhrase(commonService.getSecretKey(), userRole);
         grantedAuthorities.add(new SimpleGrantedAuthority(userRole));
 
         String email = userByLogin.getEmail();
-        email = SDESCypherUtils.decodePhrase(getSecretKey(), email);
+        email = SDESCypherUtils.decodePhrase(commonService.getSecretKey(), email);
         String password = userByLogin.getPassword();
-        password = SDESCypherUtils.decodePhrase(getSecretKey(), password);
+        password = SDESCypherUtils.decodePhrase(commonService.getSecretKey(), password);
         return new UsernamePasswordAuthenticationToken(email, password,
             grantedAuthorities);
     }
@@ -87,7 +88,4 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         return authentication.equals(UsernamePasswordAuthenticationToken.class);
     }
 
-    private int getSecretKey(){
-        return Integer.parseInt(env.getProperty("secretKey"));
-    }
 }

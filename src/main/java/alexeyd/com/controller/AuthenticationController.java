@@ -3,6 +3,7 @@ package alexeyd.com.controller;
 import alexeyd.com.model.User;
 import alexeyd.com.repository.DefaultChatRepository;
 import alexeyd.com.repository.UserRepository;
+import alexeyd.com.service.CommonService;
 import alexeyd.com.util.CryptoUtils;
 import alexeyd.com.util.SDESCypherUtils;
 import alexeyd.com.exceptions.UserAlreadyExistsException;
@@ -24,7 +25,7 @@ import static alexeyd.com.consts.Common.*;
 public class AuthenticationController {
 
     @Autowired
-    private Environment env;
+    private CommonService commonService;
 
     @Autowired
     private DefaultChatRepository defaultChatRepository;
@@ -36,7 +37,7 @@ public class AuthenticationController {
     public User authenticate(@RequestParam("emailAddress") String emailAddress, @RequestParam("password") String password) throws Exception {
 
         //Mono<User> userByLogin = Mono.justOrEmpty(userService.findFirstByEmail(emailAddress));
-        emailAddress = SDESCypherUtils.encodePhrase(getSecretKey(), emailAddress);
+        emailAddress = SDESCypherUtils.encodePhrase(commonService.getSecretKey(), emailAddress);
         Mono<User> userByLoginMono = userService.findFirstByEmail(emailAddress);
         User userByLogin = userByLoginMono.block();
 
@@ -48,14 +49,14 @@ public class AuthenticationController {
 
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         String decodedPassword = userByLogin.getPassword();
-        decodedPassword = SDESCypherUtils.decodePhrase(getSecretKey(), decodedPassword);
+        decodedPassword = SDESCypherUtils.decodePhrase(commonService.getSecretKey(), decodedPassword);
 
         if (!password.equals(decodedPassword)) {
         //if (!bCryptPasswordEncoder.matches(password, decodedPassword)) {
             throw new UserNotFoundException(MSG_ERR_INCORRECT_PASSORD);
         }
 
-        userByLogin = CryptoUtils.decryptWholeObject(getSecretKey(), userByLogin);
+        userByLogin = CryptoUtils.decryptWholeObject(commonService.getSecretKey(), userByLogin);
         return userByLogin;
     }
 
@@ -69,10 +70,6 @@ public class AuthenticationController {
             throw new UserAlreadyExistsException(MSG_ERR_USER_ALREADY_EXISTS);
         }
 
-    }
-
-    private int getSecretKey(){
-        return Integer.parseInt(env.getProperty("secretKey"));
     }
 
 }
