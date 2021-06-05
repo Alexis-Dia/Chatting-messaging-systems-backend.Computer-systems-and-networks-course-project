@@ -8,7 +8,6 @@ import alexeyd.com.util.CryptoUtils;
 import alexeyd.com.util.SDESCypherUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static alexeyd.com.consts.RestNavigation.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Controller
@@ -42,7 +42,7 @@ public class ChatController {
 		return "index.html";
 	}
 
-	@PostMapping(path = "/channels/createNewChannel", consumes = APPLICATION_JSON_VALUE)
+	@PostMapping(path = PATH_CHANNELS_CREATE_NEW_CHANNEL, consumes = APPLICATION_JSON_VALUE)
 	public Mono<ResponseEntity<Void>> createNewTopic(@RequestBody Message message) throws Exception {
 		message.setCreationDate(LocalDateTime.now().toString());
 		message.setId(System.currentTimeMillis());
@@ -55,7 +55,7 @@ public class ChatController {
 				.onErrorReturn(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
 	}
 
-	@PostMapping(path = "/channels/addNewMessage", consumes = APPLICATION_JSON_VALUE)
+	@PostMapping(path = PATH_CHANNELS_ADD_NEW_MESSAGE, consumes = APPLICATION_JSON_VALUE)
 	public Mono<ResponseEntity<Void>> addNewMessage(@RequestBody Message message) throws Exception {
 		message.setCreationDate(LocalDateTime.now().toString());
 		message.setId(System.currentTimeMillis());
@@ -84,7 +84,7 @@ public class ChatController {
 	}
 
 	@ResponseBody
-	@GetMapping(value = "/channels/getAllChannels")
+	@GetMapping(value = PATH_CHANNELS_GET_ALL_CHANNELS)
 	public List<Message> getAllChannels() {
 		List<Message> collect = defaultChatRepository
 				.findAll()
@@ -106,7 +106,7 @@ public class ChatController {
 	}
 
 	@ResponseBody
-	@PostMapping(value = "/channels/deleteChannel")
+	@PostMapping(value = PATH_CHANNELS_DELETE_CHANNEL)
 	public void deleteChannel(@RequestBody Message message) throws Exception {
 
 		String topicWithoutEncryption = message.getTopic();
